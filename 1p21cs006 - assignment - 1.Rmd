@@ -1,0 +1,92 @@
+---
+title: "Assignment - 1 - Machine Learning"
+author: "Hanssic kennady"
+date: "2022-08-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Import Library
+
+```{r}
+library(ISLR)
+library(tidyverse)
+```
+
+## 1. This exercise involves the Auto data set studied in the lab. Make sure that the missing values have been removed from the data.
+
+```{r}
+data <- data.frame(Auto)
+data
+```
+
+### (a) Which of the predictors are quantitative, and which are qualitative?
+
+```{r}
+ls(data)
+```
+
+#### ANS: **Name, Cylinders, Origin** are qualitative in the auto data set
+
+### (b) What is the range of each quantitative predictor? You can answer this using the range() function.
+
+```{r}
+# Quantitative data as quan
+quan <- select(data , -name, -origin, -cylinders)
+# Qualitative data as qual
+qual <- select(data, name, origin, cylinders)
+```
+
+```{r}
+lapply(quan, range)
+```
+
+#### ANS: acceleration (8, 24.8), displacement (68, 455), horsepower (46, 230), mpg (9, 46.6), weight (1613, 5140), year (70, 82)
+
+### (c) What is the mean and standard deviation of each quantitative predictor?
+
+```{r}
+print(toupper("mean for quantitative predictor"))
+unlist(lapply(quan, mean))
+print(toupper("standard deviation for quantitative predictor"))
+unlist(lapply(quan, sd))
+```
+
+#### ANS: acceleration (M = 15.54, SD = 2.75), displacement (M = 196.06, SD = 104.73), horsepower (M = 104.70, SD = 38.76), mpg (M = 23.45, SD = 7.84), weight (M = 2982.62, SD = 854.28), year (M = 75.96, SD = 3.69)
+
+### (d) Now remove the 10th through 85th observations. What is the range, mean, and standard deviation of each predictor in the subset of the data that remains?
+
+```{r}
+rm_data <- quan[-c(10:84), ]
+rm_data
+
+print(toupper("range of quantitative(-10 to -85)"))
+lapply(rm_data,range)
+print(toupper("mean of quantitative(-10 to -85)"))
+unlist(lapply(rm_data,mean))
+print(toupper("standard deviation of quantitative(-10 to -85)"))
+unlist(lapply(rm_data,sd))
+
+```
+
+#### ANS: [**RANGE**]{.underline} mpg(11.0, 46.6), displacement(68, 455), horsepower(46, 230), weight(1649, 4997), acceleration(8.5, 24.8), year(70, 82) [**MEAN**]{.underline} mpg(24.36845), displacement(187.75394), horsepower(100.95584), weight(2939.64353), acceleration(15.71830), year(77.13249) [**STANDARD DEVIATION**]{.underline} mpg(7.880898), displacement(99.939488), horsepower(35.895567), weight(812.649629), acceleration(2.693813), year(3.110026)
+
+### (e) Using the full data set, investigate the predictors graphically, using scatterplots or other tools of your choice. Create some plots highlighting the relationships among the predictors. Comment on your findings.
+
+```{r}
+library(PerformanceAnalytics)
+
+chart.Correlation(quan, histogram = TRUE, method = "pearson")
+
+
+# pairs(data,upper.panel = NULL)
+```
+
+#### ANS: [**horsepower vs displacement**]{.underline} having [**0.90**]{.underline} correlation value so it has good relationship [**weight vs displacement**]{.underline} having [**0.93**]{.underline} correlation value so it has good relationship [**horsepower vs weight**]{.underline} having [**0.86**]{.underline} correlation value so it has good relationship
+
+### (f) Suppose that we wish to predict gas mileage (mpg) on the basis of the other variables. Do your plots suggest that any of the other variables might be useful in predicting mpg? Justify your answer
+
+#### ANS: when we compare mpg to other variables only displacement , horsepower , weight are negatively correlated so I will suggest to neglect these variable and predict for other two variables acceleration and year. year is the highest correlation value for mpg so priority wise year goes first for prediction
